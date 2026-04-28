@@ -44,7 +44,7 @@ const PostagemScreen = () => {
     }
   };
 
-  const enviarWhatsApp = async () => {
+/*   const enviarWhatsApp = async () => {
       const dadosParaSalvar = {
         id: Date.now().toString(), // ID único baseado no timestamp
         dataAbertura: dataAbertura.toISOString(),
@@ -78,7 +78,72 @@ const PostagemScreen = () => {
 
         Alert.alert("Sucesso", "Meditação salva e enviada!");
       }
+    }; */
+
+
+    const enviarWhatsApp = async () => {
+
+    // 1. MONTAGEM DA STRING (Lógica Corrigida)
+    let msg = `📖 *DIÁRIO ESPIRITUAL*\n`;
+
+    // Bloco de Abertura
+    if (habAbertura) {
+      msg += `📅 *Dia* ${dataAbertura.toLocaleDateString('pt-BR')}:\n\n`;
+      if (Frases) msg += `✨ *Frases Fortes:* \n "${Frases}"\n\n`;
+      if (Proposito) msg += `💡 *Proposito:* ${Proposito}\n\n\n`;
+    }
+
+    // Bloco de Fechamento (Corrigido o erro do += msg +=)
+    if (habFechamento) {
+      msg += `🏁 *FECHAMENTO* ${dataFechamento.toLocaleDateString('pt-BR')}:\n\n`;
+      if (gratidao) msg += `🙏 *Gratidão por:* \n ${gratidao}\n`;
+      if (ComoViviProposito) msg += `💡 *Como vivi o Propósito:* \n ${ComoViviProposito}\n\n`;
+    }
+
+    // 2. PREPARAÇÃO DOS DADOS (Usando suas variáveis de estado)
+    const dadosParaSalvar = {
+      id: Date.now().toString(),
+      dataAbertura: dataAbertura.toISOString(),
+      dataFechamento: dataFechamento.toISOString(),
+      frases: Frases,
+      proposito: Proposito,
+      comoVivi: ComoViviProposito,
+      gratidao: gratidao,
+      textoFormatado: msg, // Guardamos a mensagem pronta para o histórico
     };
+
+    try {
+      // 3. SALVAMENTO LOCAL
+      const salvo = await salvarPostagem(dadosParaSalvar);
+
+      Alert.alert("Sucesso", "Meditação salva e enviada!");
+
+      // 4. ENVIO WHATSAPP
+/*       const url = `whatsapp://send?text=${encodeURIComponent(msg)}`;
+      const supported = await Linking.canOpenURL(url);
+
+      if (supported) {
+        await Linking.openURL(url);
+      } else {
+        Alert.alert('Erro', 'WhatsApp não encontrado no dispositivo.');
+      }
+ */
+      // 4. ENVIO WHATSAPP correto
+      const url = `whatsapp://send?text=${encodeURIComponent(msg)}`;
+        Linking.openURL(url).catch(() => {
+        Alert.alert('Erro', 'Certifique-se de que o WhatsApp está instalado.');
+        });
+
+      
+      
+      // Opcional: Limpar campos após o sucesso
+      // setFrases(''); setProposito(''); setGratidao(''); setComoViviProposito('');
+      
+    } catch (error) {
+      Alert.alert("Erro", "Não foi possível salvar a postagem.");
+      console.error(error);
+    }
+  };
 
 
   return (
