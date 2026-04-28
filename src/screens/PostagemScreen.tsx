@@ -44,26 +44,7 @@ const PostagemScreen = () => {
     }
   };
 
-  const enviarWhatsApp = () => {
-    let msg = `📖 *DIÁRIO ESPIRITUAL*\n`;
-    if (habAbertura && dataAbertura) msg += `📅 *Abertura* ${dataAbertura.toLocaleDateString('pt-BR')}:\n`;
-
-    if (habAbertura && Frases) msg += `✨ *Frases Fortes:*  "${Frases}"\n\n`;
-    if (habAbertura && Proposito) msg += `💡 *Proposito:* ${Proposito}\n\n`;
-
-    if (habFechamento && dataFechamento) msg += msg += `🏁 *Fechamento* ${dataFechamento.toLocaleDateString('pt-BR')}:\n\n`;
-
-    if (habFechamento && gratidao) msg += `🙏 *Gratidão:* ${gratidao}`;
-    if (habFechamento && ComoViviProposito) msg += `💡 *Como vivi o Proposito:* ${ComoViviProposito}\n\n`;
-
-
-    const url = `whatsapp://send?text=${encodeURIComponent(msg)}`;
-    Linking.openURL(url).catch(() => {
-      Alert.alert('Erro', 'Certifique-se de que o WhatsApp está instalado.');
-    });
-
-    // ... dentro da função enviarWhatsApp
-    const enviarWhatsApp = async () => {
+  const enviarWhatsApp = async () => {
       const dadosParaSalvar = {
         id: Date.now().toString(), // ID único baseado no timestamp
         dataAbertura: dataAbertura.toISOString(),
@@ -79,15 +60,26 @@ const PostagemScreen = () => {
 
       if (salvo) {
         // Só então abre o WhatsApp
-        const msg = `... sua lógica de mensagem ...`;
+            let msg = `📖 *DIÁRIO ESPIRITUAL*\n`;
+				if (habAbertura && dataAbertura) msg += `📅 *Abertura* ${dataAbertura.toLocaleDateString('pt-BR')}:\n`;
+
+				if (habAbertura && Frases) msg += `✨ *Frases Fortes:*  "${Frases}"\n\n`;
+				if (habAbertura && Proposito) msg += `💡 *Proposito:* ${Proposito}\n\n`;
+
+				if (habFechamento && dataFechamento) msg += msg += `🏁 *Fechamento* ${dataFechamento.toLocaleDateString('pt-BR')}:\n\n`;
+
+				if (habFechamento && gratidao) msg += `🙏 *Gratidão:* ${gratidao}`;
+				if (habFechamento && ComoViviProposito) msg += `💡 *Como vivi o Proposito:* ${ComoViviProposito}\n\n`;
+
         const url = `whatsapp://send?text=${encodeURIComponent(msg)}`;
-        Linking.openURL(url);
+        Linking.openURL(url).catch(() => {
+        Alert.alert('Erro', 'Certifique-se de que o WhatsApp está instalado.');
+        });
 
         Alert.alert("Sucesso", "Meditação salva e enviada!");
       }
     };
 
-  };
 
   return (
     <SafeAreaView style={globalStyles.container}>
