@@ -27,3 +27,20 @@ export const buscarPostagens = async () => {
     return [];
   }
 };
+
+// Crie esta função para não precisar manipular AsyncStorage direto na tela
+export const removerPostagem = async (id: string) => {
+  try {
+    const dados = await AsyncStorage.getItem(CHAVE_DIARIO);
+    if (dados) {
+      const lista = JSON.parse(dados);
+      const novaLista = lista.filter((item: any) => item.id !== id);
+      await AsyncStorage.setItem(CHAVE_DIARIO, JSON.stringify(novaLista));
+      return novaLista; // Retorna a lista atualizada para o estado da tela
+    }
+    return [];
+  } catch (e) {
+    console.error("Erro ao remover:", e);
+    return null;
+  }
+};

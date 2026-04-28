@@ -14,6 +14,26 @@ export const globalStyles = StyleSheet.create({
         flex: 1,
         backgroundColor: Cores.fundo,
     },
+    headerContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundColor: Cores.fundo,
+
+    },
+    headerText: {
+        fontSize: 20,
+        fontWeight: 'bold',
+        color:  Cores.branco,
+        marginRight: 10, // Espaço entre texto e logo
+    },
+    headerLogo: {
+        width: 130,
+        height: 35,
+        resizeMode: 'contain',
+        marginRight: 20,
+    },
+
     header: {
         flexDirection: 'row',
         alignItems: 'center',
@@ -23,6 +43,7 @@ export const globalStyles = StyleSheet.create({
         borderBottomRightRadius: 30,
         elevation: 5,
     },
+
     headerTitle: {
         fontSize: 24,
         fontWeight: 'bold',
@@ -67,13 +88,13 @@ export const globalStyles = StyleSheet.create({
         fontSize: 18,
     },
     input: {
-        flex: 1, 
+        flex: 1,
         height: 150,
         backgroundColor: '#f9f9f9',
         borderRadius: 10,
         //marginTop: 10,
         padding: 15,
-        textAlignVertical: 'top', 
+        textAlignVertical: 'top',
         fontSize: 16,
         borderWidth: 1,
         borderColor: '#eee'

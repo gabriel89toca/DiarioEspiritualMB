@@ -4,6 +4,8 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 // Importando os ícones
 import { Home, BookOpen, History } from 'lucide-react-native';
+import { Image, View, Text, StyleSheet } from 'react-native';
+import { globalStyles } from './src/styles/globalStyles';
 
 import HomeScreen from './src/screens/HomeScreen';
 import PostagemScreen from './src/screens/PostagemScreen';
@@ -11,14 +13,32 @@ import HistoricoScreen from './src/screens/HistoricoScreen';
 
 const Tab = createBottomTabNavigator();
 
+// Função que cria o componente do Título com Logo
+const CustomHeaderTitle = () => (
+  <View style={globalStyles.headerContainer}>
+    <Image
+      source={require('./assets/logoMB.jpg')} // Use o caminho do seu logo
+      style={globalStyles.headerLogo}
+    />
+    <Text style={globalStyles.headerText}>Diário Espiritual</Text>
+
+  </View>
+);
+
 export default function App() {
   return (
     <SafeAreaProvider>
       <NavigationContainer>
-        <Tab.Navigator 
+        <Tab.Navigator
           screenOptions={({ route }) => ({
+            headerTitle: () => <CustomHeaderTitle />, // Aplica o logo em todas as telas
+            headerTitleAlign: 'center',
+            headerStyle: {
+              backgroundColor: '#274253',
+              height: 100, // Ajuste a altura se necessário
+            },
             headerShown: true,
-            headerStyle: { backgroundColor: '#fff' },
+            //headerStyle: { backgroundColor: '#fff' },
             headerTintColor: '#075E54',
             tabBarActiveTintColor: '#25D366',
             tabBarInactiveTintColor: 'gray',
@@ -42,3 +62,9 @@ export default function App() {
     </SafeAreaProvider>
   );
 }
+
+const styles = StyleSheet.create({
+
+
+
+});

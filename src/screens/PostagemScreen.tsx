@@ -44,7 +44,13 @@ const PostagemScreen = () => {
     }
   };
 
-    const enviarWhatsApp = async () => {
+  const enviarWhatsApp = async () => {
+
+    // 1. Geramos a data e hora atual
+    const agora = new Date();
+    const dataPost = agora.toLocaleDateString('pt-BR');
+    const horaPost = agora.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+
 
     // 1. MONTAGEM DA STRING (Lógica Corrigida)
     let msg = `📖 *DIÁRIO ESPIRITUAL*\n`;
@@ -66,6 +72,8 @@ const PostagemScreen = () => {
     // 2. PREPARAÇÃO DOS DADOS (Usando suas variáveis de estado)
     const dadosParaSalvar = {
       id: Date.now().toString(),
+      dataExibicao: dataPost,
+      horaPostagem: horaPost, 
       dataAbertura: dataAbertura.toISOString(),
       dataFechamento: dataFechamento.toISOString(),
       frases: Frases,
@@ -83,15 +91,15 @@ const PostagemScreen = () => {
 
       // 4. ENVIO WHATSAPP 
       const url = `whatsapp://send?text=${encodeURIComponent(msg)}`;
-        Linking.openURL(url).catch(() => {
+      Linking.openURL(url).catch(() => {
         Alert.alert('Erro', 'Certifique-se de que o WhatsApp está instalado.');
-        });
+      });
 
-      
-      
+
+
       // Opcional: Limpar campos após o sucesso
       // setFrases(''); setProposito(''); setGratidao(''); setComoViviProposito('');
-      
+
     } catch (error) {
       Alert.alert("Erro", "Não foi possível salvar a postagem.");
       console.error(error);
