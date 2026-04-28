@@ -44,43 +44,6 @@ const PostagemScreen = () => {
     }
   };
 
-/*   const enviarWhatsApp = async () => {
-      const dadosParaSalvar = {
-        id: Date.now().toString(), // ID único baseado no timestamp
-        dataAbertura: dataAbertura.toISOString(),
-        dataFechamento: dataFechamento.toISOString(),
-        frases: Frases,
-        proposito: Proposito,
-        comoVivi: ComoViviProposito,
-        gratidao: gratidao,
-      };
-
-      // Salva localmente
-      const salvo = await salvarPostagem(dadosParaSalvar);
-
-      if (salvo) {
-        // Só então abre o WhatsApp
-            let msg = `📖 *DIÁRIO ESPIRITUAL*\n`;
-				if (habAbertura && dataAbertura) msg += `📅 *Abertura* ${dataAbertura.toLocaleDateString('pt-BR')}:\n`;
-
-				if (habAbertura && Frases) msg += `✨ *Frases Fortes:*  "${Frases}"\n\n`;
-				if (habAbertura && Proposito) msg += `💡 *Proposito:* ${Proposito}\n\n`;
-
-				if (habFechamento && dataFechamento) msg += msg += `🏁 *Fechamento* ${dataFechamento.toLocaleDateString('pt-BR')}:\n\n`;
-
-				if (habFechamento && gratidao) msg += `🙏 *Gratidão:* ${gratidao}`;
-				if (habFechamento && ComoViviProposito) msg += `💡 *Como vivi o Proposito:* ${ComoViviProposito}\n\n`;
-
-        const url = `whatsapp://send?text=${encodeURIComponent(msg)}`;
-        Linking.openURL(url).catch(() => {
-        Alert.alert('Erro', 'Certifique-se de que o WhatsApp está instalado.');
-        });
-
-        Alert.alert("Sucesso", "Meditação salva e enviada!");
-      }
-    }; */
-
-
     const enviarWhatsApp = async () => {
 
     // 1. MONTAGEM DA STRING (Lógica Corrigida)
@@ -118,17 +81,7 @@ const PostagemScreen = () => {
 
       Alert.alert("Sucesso", "Meditação salva e enviada!");
 
-      // 4. ENVIO WHATSAPP
-/*       const url = `whatsapp://send?text=${encodeURIComponent(msg)}`;
-      const supported = await Linking.canOpenURL(url);
-
-      if (supported) {
-        await Linking.openURL(url);
-      } else {
-        Alert.alert('Erro', 'WhatsApp não encontrado no dispositivo.');
-      }
- */
-      // 4. ENVIO WHATSAPP correto
+      // 4. ENVIO WHATSAPP 
       const url = `whatsapp://send?text=${encodeURIComponent(msg)}`;
         Linking.openURL(url).catch(() => {
         Alert.alert('Erro', 'Certifique-se de que o WhatsApp está instalado.');
