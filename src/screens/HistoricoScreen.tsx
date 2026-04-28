@@ -1,15 +1,15 @@
 import React, { useState, useCallback } from 'react';
-import { 
-  View, Text, FlatList, StyleSheet, SafeAreaView, TouchableOpacity 
-} from 'react-native';
+import { View, Text, StyleSheet, FlatList, TouchableOpacity, Alert } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
-import { buscarPostagens } from '../services/storage';
-import { globalStyles } from '../styles/globalStyles';
+import { Trash2, ChevronDown, ChevronUp, Sun, Moon } from 'lucide-react-native';
+import { buscarPostagens, salvarPostagem } from '../services/storage';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const HistoricoScreen = () => {
-  const [postagens, setPostagens] = useState([]);
+  const [postagens, setPostagens] = useState<any[]>([]);
+  const [expandido, setExpandido] = useState<string | null>(null);
 
-  // Recarrega os dados sempre que o Mateus entrar na tela
+  // Carrega os dados sempre que a tela ganha foco
   useFocusEffect(
     useCallback(() => {
       const carregarDados = async () => {
@@ -20,89 +20,100 @@ const HistoricoScreen = () => {
     }, [])
   );
 
-  const renderItem = ({ item }: { item: any }) => (
-    <View style={styles.card}>
-      <View style={styles.cardHeader}>
-        <Text style={styles.cardData}>📅 {new Date(item.dataAbertura).toLocaleDateString('pt-BR')}</Text>
-        <Text style={styles.cardStatus}>Meditação</Text>
+  const apagarItem = (id: string) => {
+    Alert.alert("Apagar Histórico", "Tem certeza que deseja excluir esta meditação?", [
+      { text: "Cancelar", style: "cancel" },
+      {
+        text: "Apagar",
+        style: "destructive",
+        onPress: async () => {
+          const novaLista = postagens.filter(item => item.id !== id);
+          await AsyncStorage.setItem('@diario_meditacoes', JSON.stringify(novaLista));
+          setPostagens(novaLista);
+        }
+      }
+    ]);
+  };
+
+  const toggleExpandir = (id: string) => {
+    setExpandido(expandido === id ? null : id);
+  };
+
+  const renderItem = ({ item }: { item: any }) => {
+    const isExpandido = expandido === item.id;
+    const dataAbertura = new Date(item.dataAbertura).toLocaleDateString('pt-BR');
+
+    return (
+      <View style={styles.card}>
+        <TouchableOpacity 
+          style={styles.headerCard} 
+          onPress={() => toggleExpandir(item.id)}
+        >
+          <View style={styles.row}>
+            {/* Ícones de Abertura/Fechamento indicativos */}
+            <Sun size={18} color="#fbc02d" style={{ marginRight: 5 }} />
+            <Moon size={18} color="#5c6bc0" style={{ marginRight: 10 }} />
+            
+            <Text style={styles.dataText}>{dataAbertura}</Text>
+          </View>
+
+          <View style={styles.actions}>
+            <TouchableOpacity onPress={() => apagarItem(item.id)} style={styles.deleteButton}>
+              <Trash2 size={20} color="#ff5252" />
+            </TouchableOpacity>
+            {isExpandido ? <ChevronUp color="#075E54" /> : <ChevronDown color="#075E54" />}
+          </View>
+        </TouchableOpacity>
+
+        {isExpandido && (
+          <View style={styles.content}>
+            <Text style={styles.textoDiario}>{item.textoFormatado}</Text>
+          </View>
+        )}
       </View>
-      
-      {item.frases ? (
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>✨ Frases Fortes:</Text>
-          <Text style={styles.sectionText}>"{item.frases}"</Text>
-        </View>
-      ) : null}
-
-      {item.proposito ? (
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>🎯 Propósito:</Text>
-          <Text style={styles.sectionText}>{item.proposito}</Text>
-        </View>
-      ) : null}
-
-      {item.comoVivi ? (
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>💪 Vivência:</Text>
-          <Text style={styles.sectionText}>{item.comoVivi}</Text>
-        </View>
-      ) : null}
-    </View>
-  );
+    );
+  };
 
   return (
-    <SafeAreaView style={globalStyles.container}>
-      <View style={styles.header}>
-        <Text style={styles.title}>Meu Histórico</Text>
-      </View>
-
+    <View style={styles.container}>
       <FlatList
         data={postagens}
         keyExtractor={(item) => item.id}
         renderItem={renderItem}
-        contentContainerStyle={styles.listContent}
-        ListEmptyComponent={
-          <Text style={styles.emptyText}>Nenhuma meditação salva ainda. 🙏</Text>
-        }
+        ListEmptyComponent={<Text style={styles.empty}>Nenhum histórico encontrado.</Text>}
+        contentContainerStyle={{ paddingBottom: 20 }}
       />
-    </SafeAreaView>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
-  header: {
-    padding: 20,
-    backgroundColor: '#fff',
-    borderBottomLeftRadius: 30,
-    borderBottomRightRadius: 30,
-    elevation: 4,
-    marginBottom: 10,
+  container: { flex: 1, backgroundColor: '#075E54', padding: 15 },
+  card: { 
+    backgroundColor: '#fff', 
+    borderRadius: 12, 
+    marginBottom: 10, 
+    overflow: 'hidden',
+    elevation: 3 
   },
-  title: { fontSize: 22, fontWeight: 'bold', color: '#075E54', textAlign: 'center' },
-  listContent: { padding: 15 },
-  card: {
-    backgroundColor: '#fff',
-    borderRadius: 15,
-    padding: 15,
-    marginBottom: 15,
-    elevation: 3,
-    borderLeftWidth: 5,
-    borderLeftColor: '#25D366',
-  },
-  cardHeader: { 
+  headerCard: { 
     flexDirection: 'row', 
     justifyContent: 'space-between', 
-    marginBottom: 10,
-    borderBottomWidth: 0.5,
-    borderBottomColor: '#eee',
-    paddingBottom: 5
+    alignItems: 'center', 
+    padding: 15 
   },
-  cardData: { fontWeight: 'bold', color: '#333' },
-  cardStatus: { color: '#2f8ec5', fontSize: 12, fontWeight: '600' },
-  section: { marginTop: 8 },
-  sectionTitle: { fontSize: 13, fontWeight: 'bold', color: '#075E54' },
-  sectionText: { fontSize: 14, color: '#555', fontStyle: 'italic' },
-  emptyText: { textAlign: 'center', marginTop: 50, color: '#fff', fontSize: 16 }
+  row: { flexDirection: 'row', alignItems: 'center' },
+  actions: { flexDirection: 'row', alignItems: 'center' },
+  dataText: { fontSize: 16, fontWeight: 'bold', color: '#333' },
+  deleteButton: { marginRight: 15, padding: 5 },
+  content: { 
+    padding: 15, 
+    borderTopWidth: 1, 
+    borderTopColor: '#eee', 
+    backgroundColor: '#f9f9f9' 
+  },
+  textoDiario: { fontSize: 14, color: '#444', lineHeight: 20 },
+  empty: { color: '#fff', textAlign: 'center', marginTop: 50, fontSize: 16 }
 });
 
 export default HistoricoScreen;
