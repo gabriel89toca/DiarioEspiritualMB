@@ -88,7 +88,10 @@ const PostagemScreen = () => {
       const salvo = await salvarPostagem(dadosParaSalvar);
 
       Alert.alert("Sucesso", "Meditação salva e enviada!");
-
+    // Opcional: Limpar campos após o sucesso
+     setFrases(''); setProposito(''); setGratidao(''); setComoViviProposito('');
+     setHabAbertura(true);
+     setHabFechamento(true);
       // 4. ENVIO WHATSAPP 
       const url = `whatsapp://send?text=${encodeURIComponent(msg)}`;
       Linking.openURL(url).catch(() => {
@@ -97,8 +100,7 @@ const PostagemScreen = () => {
 
 
 
-      // Opcional: Limpar campos após o sucesso
-      // setFrases(''); setProposito(''); setGratidao(''); setComoViviProposito('');
+     
 
     } catch (error) {
       Alert.alert("Erro", "Não foi possível salvar a postagem.");

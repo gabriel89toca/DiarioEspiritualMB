@@ -2,6 +2,18 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const CHAVE_DIARIO = '@diario_posts';
 
+export const getUsuarioConfig = async () => {
+  const keys = ['@config_nome', '@config_fraternidade', '@config_planilha_url'];
+  const res = await AsyncStorage.multiGet(keys);
+  
+  // Transforma o array de pares [[key, value], ...] em um objeto fácil de usar
+  return {
+    nome: res[0][1] || '',
+    fraternidade: res[1][1] || '',
+    planilha: res[2][1] || ''
+  };
+};
+
 export const salvarPostagem = async (novaPostagem: any) => {
   try {
     // 1. Busca o que já existe

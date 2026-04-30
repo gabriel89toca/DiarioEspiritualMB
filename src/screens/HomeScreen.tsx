@@ -8,10 +8,18 @@ const HomeScreen = ({ navigation }: { navigation: any }) => {
 
 
 
+  /*   const aoClicar = (idDaOpcao: string) => {
+      // .navigate(nomeDaTela, parâmetros)
+      // O primeiro argumento deve ser IGUAL ao 'name' definido no App.tsx
+      navigation.navigate('Postagem', { tipo: idDaOpcao });
+    }; */
+
   const aoClicar = (idDaOpcao: string) => {
-    // .navigate(nomeDaTela, parâmetros)
-    // O primeiro argumento deve ser IGUAL ao 'name' definido no App.tsx
-    navigation.navigate('Postagem', { tipo: idDaOpcao });
+    if (idDaOpcao === 'foto') {
+      navigation.navigate('PostagemPhoto'); // Chama a tela nova
+    } else {
+      navigation.navigate('Postagem', { tipo: idDaOpcao });
+    }
   };
 
   // ... no seu botão (TouchableOpacity)
@@ -24,6 +32,9 @@ const HomeScreen = ({ navigation }: { navigation: any }) => {
       <View style={globalStyles.body}>
         <TouchableOpacity style={globalStyles.button2} onPress={() => aoClicar('diario')}>
           <Text style={styles.buttonText}>Postar Diário</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={globalStyles.button2} onPress={() => aoClicar('foto')}>
+          <Text style={styles.buttonText}>Postar Diário com Fotos</Text>
         </TouchableOpacity>
       </View>
     </SafeAreaView>

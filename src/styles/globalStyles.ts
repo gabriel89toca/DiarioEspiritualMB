@@ -73,7 +73,7 @@ export const globalStyles = StyleSheet.create({
         backgroundColor: Cores.secundaria,
         padding: 20,
         borderRadius: 10,
-        marginTop: 0,
+        marginBottom: 10,
         alignItems: 'center',
     },
     button: {
