@@ -10,6 +10,7 @@ import { salvarPostagem } from '../services/storage'; // Importe o serviço
 
 
 
+
 const PostagemScreen = () => {
   // 1. Estados para os textos
   const [Frases, setFrases] = useState('');
@@ -46,6 +47,18 @@ const PostagemScreen = () => {
 
   const enviarWhatsApp = async () => {
 
+    const validaTela = true;
+    if (Frases == null && Proposito == null) {
+      Alert.alert("Atenção", "Preencher a Diário!");
+      let validaTela = false;
+    }
+
+    if (gratidao == null && ComoViviProposito == null) {
+      Alert.alert("Atenção", "Preencher a Fechamento!");
+      let validaTela = false;
+    }
+
+
     // 1. Geramos a data e hora atual
     const agora = new Date();
     const dataPost = agora.toLocaleDateString('pt-BR');
@@ -55,84 +68,94 @@ const PostagemScreen = () => {
     // 1. MONTAGEM DA STRING (Lógica Corrigida)
     let msg = `📖 *DIÁRIO ESPIRITUAL*\n`;
 
-    // Bloco de Abertura
-    if (habAbertura) {
-      msg += `📅 *Dia* ${dataAbertura.toLocaleDateString('pt-BR')}:\n\n`;
-      if (Frases) msg += `✨ *Frases Fortes:* \n "${Frases}"\n\n`;
-      if (Proposito) msg += `💡 *Proposito:* ${Proposito}\n\n\n`;
-    }
 
-    // Bloco de Fechamento (Corrigido o erro do += msg +=)
-    if (habFechamento) {
-      msg += `🏁 *FECHAMENTO* ${dataFechamento.toLocaleDateString('pt-BR')}:\n\n`;
-      if (gratidao) msg += `🙏 *Gratidão por:* \n ${gratidao}\n`;
-      if (ComoViviProposito) msg += `💡 *Como vivi o Propósito:* \n ${ComoViviProposito}\n\n`;
-    }
+    if (validaTela) {
+      // Bloco de Abertura
+      if (habAbertura) {
+        msg += `📅 *Dia* ${dataAbertura.toLocaleDateString('pt-BR')}:\n\n`;
+        if (Frases) msg += `✨ *Frases Fortes:* \n "${Frases}"\n\n`;
+        if (Proposito) msg += `💡 *Proposito:* ${Proposito}\n\n\n`;
+      }
 
-    // 2. PREPARAÇÃO DOS DADOS (Usando suas variáveis de estado)
-    const dadosParaSalvar = {
-      id: Date.now().toString(),
-      dataExibicao: dataPost,
-      horaPostagem: horaPost, 
-      dataAbertura: dataAbertura.toISOString(),
-      dataFechamento: dataFechamento.toISOString(),
-      frases: Frases,
-      proposito: Proposito,
-      comoVivi: ComoViviProposito,
-      gratidao: gratidao,
-      textoFormatado: msg, // Guardamos a mensagem pronta para o histórico
-    };
-
-    try {
-      // 3. SALVAMENTO LOCAL
-      const salvo = await salvarPostagem(dadosParaSalvar);
-
-      Alert.alert("Sucesso", "Meditação salva e enviada!");
-    // Opcional: Limpar campos após o sucesso
-     setFrases(''); setProposito(''); setGratidao(''); setComoViviProposito('');
-     setHabAbertura(true);
-     setHabFechamento(true);
-      // 4. ENVIO WHATSAPP 
-      const url = `whatsapp://send?text=${encodeURIComponent(msg)}`;
-      Linking.openURL(url).catch(() => {
-        Alert.alert('Erro', 'Certifique-se de que o WhatsApp está instalado.');
-      });
+      // Bloco de Fechamento (Corrigido o erro do += msg +=)
+      if (habFechamento) {
+        msg += `🏁 *FECHAMENTO* ${dataFechamento.toLocaleDateString('pt-BR')}:\n\n`;
+        if (gratidao) msg += `🙏 *Gratidão por:* \n ${gratidao}\n`;
+        if (ComoViviProposito) msg += `💡 *Como vivi o Propósito:* \n ${ComoViviProposito}\n\n`;
+      }
 
 
+      // 2. PREPARAÇÃO DOS DADOS (Usando suas variáveis de estado)
+      const dadosParaSalvar = {
+        id: Date.now().toString(),
+        dataExibicao: dataPost,
+        horaPostagem: horaPost,
+        dataAbertura: dataAbertura.toISOString(),
+        dataFechamento: dataFechamento.toISOString(),
+        frases: Frases,
+        proposito: Proposito,
+        comoVivi: ComoViviProposito,
+        gratidao: gratidao,
+        textoFormatado: msg, // Guardamos a mensagem pronta para o histórico
+      };
 
-     
+      try {
+        // 3. SALVAMENTO LOCAL
+        const salvo = await salvarPostagem(dadosParaSalvar);
 
-    } catch (error) {
-      Alert.alert("Erro", "Não foi possível salvar a postagem.");
-      console.error(error);
+        Alert.alert("Sucesso", "Meditação salva e enviada!");
+        // Opcional: Limpar campos após o sucesso
+
+
+        // 4. ENVIO WHATSAPP 
+        const url = `whatsapp://send?text=${encodeURIComponent(msg)}`;
+        Linking.openURL(url).catch(() => {
+          Alert.alert('Erro', 'Certifique-se de que o WhatsApp está instalado.');
+        });
+
+      } catch (error) {
+        Alert.alert("Erro", "Não foi possível salvar a postagem.");
+        console.error(error);
+      } finally {
+        // 3. Código executado sempre (ex: finalizar carregamento)
+        setFrases(''); setProposito(''); setGratidao(''); setComoViviProposito('');
+        setHabAbertura(true);
+        setHabFechamento(true);
+      }
     }
   };
 
 
   return (
     <SafeAreaView style={globalStyles.container}>
-      <View style={styles.header}>
-        <Image source={require('../../assets/holy-spirit.png')} style={styles.icone} resizeMode="contain" />
-        <Text style={styles.label}>Nova Meditação</Text>
+      <View style={globalStyles.header}>
+        <Image source={require('../../assets/holy-spirit.png')} style={globalStyles.icone} resizeMode="contain" />
+        <Text style={globalStyles.label}>Nova Meditação</Text>
+        <TouchableOpacity
+          style={[globalStyles.buttonIcone]}
+          onPress={enviarWhatsApp}
+        ><Image source={require('../../assets/compartilhar.png')} style={globalStyles.icone} resizeMode="contain" />
+        </TouchableOpacity>
       </View>
 
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         style={{ flex: 1 }}
       >
-        <ScrollView contentContainerStyle={styles.body}>
+        <ScrollView contentContainerStyle={globalStyles.body}>
+          <View style={globalStyles.switchRow}>
+            <Text style={globalStyles.inputLabel2}>Abertura:</Text>
 
+            <Switch value={habAbertura} onValueChange={setHabAbertura} thumbColor="#075E54"
+              trackColor={{ false: '#363b38', true: '#48d148' }} />
+          </View>
           {/* SELETORES DE DATA LADO A LADO */}
-          <View style={styles.rowDates}>
+          <View style={globalStyles.rowDates}>
             <View style={{ flex: 1, marginRight: 5 }}>
-              <View style={styles.switchRow}>
-                <Text style={styles.inputLabel2}>Abertura:</Text>
 
-                <Switch value={habAbertura} onValueChange={setHabAbertura} thumbColor="#25D366" />
-              </View>
               {habAbertura && (
-                <TouchableOpacity style={styles.datePickerButton} onPress={() => setPickerMode('abertura')}>
-                  <Text style={styles.dateText}>📅 {dataAbertura.toLocaleDateString('pt-BR')}</Text>
+                <TouchableOpacity style={globalStyles.datePickerButton} onPress={() => setPickerMode('abertura')}>
+                  <Text style={globalStyles.dateText}>📅 {dataAbertura.toLocaleDateString('pt-BR')}</Text>
                 </TouchableOpacity>
               )}
             </View>
@@ -149,60 +172,65 @@ const PostagemScreen = () => {
 
           {/* CAMPOS DE TEXTO (REUTILIZANDO SEU PADRÃO) */}
           {habAbertura && (
-            <View style={styles.switchRow}>
-              <Text style={styles.inputLabel}>Quais as frase que me marcaram?</Text>
+            <View style={globalStyles.switchRow}>
+              <Text style={globalStyles.inputLabel}>Quais as frase que me marcaram?</Text>
             </View>
           )}
           {habAbertura && (
-            <View style={styles.inputContainer}>
-              <TextInput style={styles.input} multiline value={Frases} onChangeText={setFrases} placeholder="Escreva aqui..." textAlignVertical="top" />
+            <View style={globalStyles.inputContainer}>
+              <TextInput style={globalStyles.input} multiline value={Frases} onChangeText={setFrases} placeholder="Escreva aqui..."
+                placeholderTextColor="#646060" textAlignVertical="top" />
             </View>
           )}
           {habAbertura && (
-            <View style={styles.switchRow}>
-              <Text style={styles.inputLabel}>Propósito para o dia de Hoje:</Text>
+            <View style={globalStyles.switchRow}>
+              <Text style={globalStyles.inputLabel}>Propósito para o dia de Hoje:</Text>
             </View>
           )}
           {habAbertura && (
-            <View style={styles.inputContainer}>
-              <TextInput style={styles.input} multiline value={Proposito} onChangeText={setProposito} placeholder="Escreva aqui..." textAlignVertical="top" />
+            <View style={globalStyles.inputContainer}>
+              <TextInput style={globalStyles.input} multiline value={Proposito} onChangeText={setProposito} placeholder="Escreva aqui..."
+                placeholderTextColor="#646060" textAlignVertical="top" />
             </View>
           )}
 
-
+          <View style={globalStyles.switchRow}>
+            <Text style={globalStyles.inputLabel2}>Fechamento:</Text>
+            <Switch value={habFechamento} onValueChange={setHabFechamento} thumbColor="#075E54"
+              trackColor={{ false: '#363b38', true: '#48d148' }} />
+          </View>
           {/* SELETORES DE DATA LADO A LADO FECHAMENTOS */}
-          <View style={styles.rowDates}>
+          <View style={globalStyles.rowDates}>
             <View style={{ flex: 1, marginLeft: 5 }}>
-              <View style={styles.switchRow}>
-                <Text style={styles.inputLabel2}>Fechamento:</Text>
-                <Switch value={habFechamento} onValueChange={setHabFechamento} thumbColor="#25D366" />
-              </View>
+
               {habFechamento && (
-                <TouchableOpacity style={styles.datePickerButton} onPress={() => setPickerMode('fechamento')}>
-                  <Text style={styles.dateText}>📅  {dataFechamento.toLocaleDateString('pt-BR')}</Text>
+                <TouchableOpacity style={globalStyles.datePickerButton} onPress={() => setPickerMode('fechamento')}>
+                  <Text style={globalStyles.dateText}>📅  {dataFechamento.toLocaleDateString('pt-BR')}</Text>
                 </TouchableOpacity>
               )}
             </View>
           </View>
           {habFechamento && (
-            <View style={styles.switchRow}>
-              <Text style={styles.inputLabel}>Como você viveu seu propósito hoje?</Text>
+            <View style={globalStyles.switchRow}>
+              <Text style={globalStyles.inputLabel}>Como você viveu seu propósito hoje?</Text>
             </View>
           )}
           {habFechamento && (
-            <View style={styles.inputContainer}>
-              <TextInput style={styles.input} multiline value={ComoViviProposito} onChangeText={setComoViviProposito} placeholder="Aprendizado..." textAlignVertical="top" />
+            <View style={globalStyles.inputContainer}>
+              <TextInput style={globalStyles.input} multiline value={ComoViviProposito} onChangeText={setComoViviProposito}
+                placeholder="Aprendizado..." placeholderTextColor="#646060" textAlignVertical="top" />
             </View>
           )}
           {habFechamento && (
-            <View style={styles.switchRow}>
-              <Text style={styles.inputLabel}>Pelo que é grato?</Text>
+            <View style={globalStyles.switchRow}>
+              <Text style={globalStyles.inputLabel}>Pelo que é grato?</Text>
               {/* <Switch value={habGratidao} onValueChange={setHabGratidao} thumbColor="#25D366" /> */}
             </View>
           )}
           {habFechamento && (
-            <View style={styles.inputContainer}>
-              <TextInput style={styles.input} multiline value={gratidao} onChangeText={setGratidao} placeholder="Gratidão..." textAlignVertical="top" />
+            <View style={globalStyles.inputContainer}>
+              <TextInput style={globalStyles.input} multiline value={gratidao} onChangeText={setGratidao} placeholder="Gratidão..."
+                placeholderTextColor="#646060" textAlignVertical="top" />
             </View>
           )}
 

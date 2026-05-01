@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, StyleSheet, TouchableOpacity, SafeAreaView, Image } from 'react-native';
+import { View, Text, TextInput, StyleSheet, TouchableOpacity, SafeAreaView, Image, ScrollView } from 'react-native';
 // O componente recebe 'navigation' automaticamente porque está declarado no Stack.Screen
 import { globalStyles } from '../styles/globalStyles';
 
@@ -25,18 +25,19 @@ const HomeScreen = ({ navigation }: { navigation: any }) => {
   // ... no seu botão (TouchableOpacity)
   return (
     <SafeAreaView style={styles.container}>
-      <View style={styles.header}>
-        <Image source={require('../../assets/biblia.png')} style={styles.icone} resizeMode="contain" />
-        <Text style={styles.headerTitle}>Menu Principal</Text>
+      <View style={globalStyles.header}>
+        <Image source={require('../../assets/biblia.png')} style={globalStyles.icone} resizeMode="contain" />
+        <Text style={globalStyles.headerTitle}>Menu Principal</Text>
+        <Image source={require('../../assets/holy-spirit.png')} style={globalStyles.icone} resizeMode="contain" />
       </View>
-      <View style={globalStyles.body}>
+      <ScrollView contentContainerStyle={globalStyles.body}>
         <TouchableOpacity style={globalStyles.button2} onPress={() => aoClicar('diario')}>
           <Text style={styles.buttonText}>Postar Diário</Text>
         </TouchableOpacity>
         <TouchableOpacity style={globalStyles.button2} onPress={() => aoClicar('foto')}>
           <Text style={styles.buttonText}>Postar Diário com Fotos</Text>
         </TouchableOpacity>
-      </View>
+      </ScrollView>
     </SafeAreaView>
   );
 };

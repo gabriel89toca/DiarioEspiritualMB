@@ -3,10 +3,11 @@ import { StyleSheet } from 'react-native';
 // Você pode exportar constantes de cores para usar em outros lugares também
 export const Cores = {
     primaria: '#075E54',
-    secundaria: '#25D366',
+    secundaria: '#78dd91',
     fundo: '#274253',
     branco: '#FFFFFF',
-    cinza: '#666',
+    preto: '#000',
+    cinza: '#eee',
 };
 
 export const globalStyles = StyleSheet.create({
@@ -23,8 +24,9 @@ export const globalStyles = StyleSheet.create({
     },
     headerText: {
         fontSize: 20,
+        alignItems: 'center',
         fontWeight: 'bold',
-        color:  Cores.branco,
+        color: Cores.branco,
         marginRight: 10, // Espaço entre texto e logo
     },
     headerLogo: {
@@ -35,14 +37,14 @@ export const globalStyles = StyleSheet.create({
     },
 
     header: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        padding: 20,
+     flexDirection: 'row', justifyContent: 'space-between',
+        padding: 15,
         backgroundColor: Cores.branco,
-        borderBottomLeftRadius: 30,
-        borderBottomRightRadius: 30,
+        borderBottomLeftRadius: 11,
+        borderBottomRightRadius: 11,
         elevation: 5,
     },
+    label: { flexDirection: 'row', fontSize: 18, fontWeight: 'bold', color: Cores.primaria,  justifyContent: 'space-between' },
 
     headerTitle: {
         fontSize: 24,
@@ -54,12 +56,24 @@ export const globalStyles = StyleSheet.create({
         height: 30,
         marginRight: 10  // Ajuste o tamanho conforme necessário   
     },
-    body: {
-        flex: 1,
-        paddingHorizontal: 20,
-        paddingTop: 20,
-        paddingBottom: 55,
+    body: { paddingHorizontal: 20, paddingVertical: 10 },
+
+
+    // Estilos para as datas em linha
+    rowDates: { flexDirection: 'row', marginTop:8},
+    datePickerButton: {
+        backgroundColor: '#fff',
+        padding: 10,
+        borderRadius: 8,
+        marginTop: 5,
+        alignItems: 'center',
+        elevation: 2
     },
+    dateText: { color: '#075E54', fontWeight: 'bold', fontSize: 14 },
+
+    switchRow: { flexDirection: 'row', justifyContent: 'space-between', marginTop:8},
+    inputLabel: { color: '#fff', fontSize: 16, fontWeight: 'bold' },
+    inputLabel2: { color: Cores.secundaria, fontSize: 20, fontWeight: 'bold' },
 
 
     /* Estilos para formularios */
@@ -76,6 +90,10 @@ export const globalStyles = StyleSheet.create({
         marginBottom: 10,
         alignItems: 'center',
     },
+    buttonIcone: {
+        padding: 5,
+        marginBottom: 1,
+        },
     button: {
         backgroundColor: '#25D366',
         padding: 12,
@@ -89,14 +107,19 @@ export const globalStyles = StyleSheet.create({
     },
     input: {
         flex: 1,
-        height: 150,
-        backgroundColor: '#f9f9f9',
+        height: 100,
+        backgroundColor: Cores.cinza,
         borderRadius: 10,
         //marginTop: 10,
         padding: 15,
         textAlignVertical: 'top',
         fontSize: 16,
         borderWidth: 1,
-        borderColor: '#eee'
+        borderColor: '#eee', 
+        color: Cores.preto
     },
+
+    inputContainer: {backgroundColor: Cores.secundaria, borderRadius: 12, padding: 2, minHeight: 60,
+    marginTop: 5, elevation: 2, },
+
 });
